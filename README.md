@@ -8,7 +8,7 @@ The real power, though, is in its URL schemes. The clear-cut commands `obsidian:
 
 #### Log
 
-<video height="800" controls>
+<video max-height="800" controls>
   <source src="https://user-images.githubusercontent.com/3618647/136626863-e4bb5fd0-e6d8-4341-aee4-d2a6359cc912.MP4" type="video/mp4">
 </video>
 
