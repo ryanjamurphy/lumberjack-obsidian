@@ -1,7 +1,7 @@
 {
-  "name": "obsidian-sample-plugin",
-  "version": "0.12.0",
-  "description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+  "name": "Lumberjack 🪓🪵",
+  "version": "1.0.0",
+  "description": "Log your thoughts! Lumberjack adds URL commands to help you axe inefficiency and get right to writing.",
   "main": "main.js",
   "scripts": {
     "dev": "rollup --config rollup.config.js -w",
@@ -19,5 +19,10 @@
     "rollup": "^2.32.1",
     "tslib": "^2.2.0",
     "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "obsidian-daily-notes-interface": "^0.9.4",
+    "rollup-plugin-copy": "^3.4.0"
   }
 }

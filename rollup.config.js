@@ -1,6 +1,10 @@
+import dotenv from 'dotenv';
 import typescript from '@rollup/plugin-typescript';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import copy from 'rollup-plugin-copy';
+
+dotenv.config();
 
 const isProd = (process.env.BUILD === 'production');
 
@@ -11,7 +15,7 @@ if you want to view the source visit the plugins github repository
 */
 `;
 
-export default {
+const output = [ {
   input: 'main.ts',
   output: {
     dir: '.',
@@ -27,4 +31,81 @@ export default {
     nodeResolve({browser: true}),
     commonjs(),
   ]
-};
+}];
+
+if (process.env.macOS_Destination) { // Thanks, @mgmeyers!
+  output.push({
+    input: "./main.ts",
+    output: {
+      dir: process.env.macOS_Destination,
+      sourcemap: "inline",
+      format: "cjs",
+      exports: "default",
+      banner,
+    },
+    external: ["obsidian"],
+    plugins: [
+      typescript(),
+      nodeResolve({ browser: true }),
+      commonjs(),
+      copy({
+        targets: [
+          { src: "./manifest.json", dest: process.env.macOS_Destination },
+          { src: "./styles.css", dest: process.env.macOS_Destination },
+        ],
+      }),
+    ],
+  });
+}
+
+if (process.env.iPadOS_Destination) { // Thanks, @mgmeyers!
+  output.push({
+    input: "./main.ts",
+    output: {
+      dir: process.env.iPadOS_Destination,
+      sourcemap: "inline",
+      format: "cjs",
+      exports: "default",
+      banner,
+    },
+    external: ["obsidian"],
+    plugins: [
+      typescript(),
+      nodeResolve({ browser: true }),
+      commonjs(),
+      copy({
+        targets: [
+          { src: "./manifest.json", dest: process.env.iPadOS_Destination },
+          { src: "./styles.css", dest: process.env.iPadOS_Destination },
+        ],
+      }),
+    ],
+  });
+}
+
+if (process.env.iOS_Destination) { // Thanks, @mgmeyers!
+  output.push({
+    input: "./main.ts",
+    output: {
+      dir: process.env.iOS_Destination,
+      sourcemap: "inline",
+      format: "cjs",
+      exports: "default",
+      banner,
+    },
+    external: ["obsidian"],
+    plugins: [
+      typescript(),
+      nodeResolve({ browser: true }),
+      commonjs(),
+      copy({
+        targets: [
+          { src: "./manifest.json", dest: process.env.iOS_Destination },
+          { src: "./styles.css", dest: process.env.iOS_Destination },
+        ],
+      }),
+    ],
+  });
+}
+
+export default output;

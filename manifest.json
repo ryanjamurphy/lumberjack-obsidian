@@ -1,10 +1,10 @@
 {
-	"id": "obsidian-sample-plugin",
-	"name": "Sample Plugin",
-	"version": "1.0.1",
-	"minAppVersion": "0.9.12",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md/about",
+	"id": "lumberjack-obsidian",
+	"name": "Lumberjack 🪓 🪵",
+	"version": "1.0.0",
+	"minAppVersion": "0.12.0",
+	"description": "Log your thoughts! Lumberjack adds URL commands to help you axe inefficiency and get right to writing.",
+	"author": "ryanjamurphy",
+	"authorUrl": "https://axle.design",
 	"isDesktopOnly": false
 }
