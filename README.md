@@ -8,7 +8,12 @@ The real power, though, is in its URL schemes. The clear-cut commands `obsidian:
 
 #### Log
 
+![A demo of the Lumberjack Log URL scheme on iOS via Shortcuts](https://user-images.githubusercontent.com/3618647/136626863-e4bb5fd0-e6d8-4341-aee4-d2a6359cc912.MP4)
+
 #### Timber
+
+![A demo of the Lumberjack Timber URL scheme on iOS via Shortcuts](https://user-images.githubusercontent.com/3618647/136626936-cafb5e96-0363-47b2-8509-b7b18cdbe158.MP4)
+
 
 ### How to use
 
@@ -21,7 +26,9 @@ The real power, though, is in its URL schemes. The clear-cut commands `obsidian:
 #### URL schemes
 
 - Run the `obsidian://log` command to open Obsidian and log a new thought in your daily note at an appended line and start writing immediately.
+  - On iOS, this is easy to set up via Shortcuts. Install [this shortcut](https://www.icloud.com/shortcuts/1efa6b9ee42242bd906884d3d8a52b92), add it to your homescreen, then tap the button! 
 - Run the `obsidian://timber` command to create a new draft in a designated inbox folder and start writing immediately.
+  -  On iOS, this is easy to set up via Shortcuts. Install [this shortcut](https://www.icloud.com/shortcuts/6594b965deab401e814aeeeb593b551d), add it to your homescreen, then tap the button! 
 
 ### Manually installing the plugin
 
