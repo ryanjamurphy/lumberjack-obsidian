@@ -7,11 +7,10 @@ The real power, though, is in its URL schemes. The clear-cut commands `obsidian:
 ### Demo videos:
 
 #### Log
-<img src="https://user-images.githubusercontent.com/3618647/136626863-e4bb5fd0-e6d8-4341-aee4-d2a6359cc912.MP4" style="width: 20em;" alt="A demo of the Lumberjack Log URL scheme on iOS via Shortcuts">
+<img src="https://user-images.githubusercontent.com/3618647/136626863-e4bb5fd0-e6d8-4341-aee4-d2a6359cc912.MP4" style="width: 24em;" alt="A demo of the Lumberjack Log URL scheme on iOS via Shortcuts">
 
 #### Timber
-
-![A demo of the Lumberjack Timber URL scheme on iOS via Shortcuts](https://user-images.githubusercontent.com/3618647/136626936-cafb5e96-0363-47b2-8509-b7b18cdbe158.MP4)
+<img src="https://user-images.githubusercontent.com/3618647/136626936-cafb5e96-0363-47b2-8509-b7b18cdbe158.MP4" style="width: 24em;" alt="A demo of the Lumberjack Timber URL scheme on iOS via Shortcuts">
 
 
 ### How to use
