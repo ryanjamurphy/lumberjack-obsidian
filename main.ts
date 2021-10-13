@@ -93,6 +93,8 @@ export default class LumberjackPlugin extends Plugin {
 		
 		if (this.settings.useTimestamp) {
 			tampTime = moment().format("HH:mm") + " ";
+		} else {
+			tampTime = "";
 		}
 
 		let openedDailyNote = await this.app.workspace.openLinkText(dailyNote.name, dailyNote.path, openFileInNewLeaf, editModeState);
