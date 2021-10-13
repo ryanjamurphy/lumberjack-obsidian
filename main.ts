@@ -110,7 +110,7 @@ export default class LumberjackPlugin extends Plugin {
 
 		// establish the line prefix to add, if anything
 		let linePrefix = `
-		${this.settings.logPrefix}${tampTime}`
+${this.settings.logPrefix}${tampTime}`
 
 		// Assume the cursor will be placed at the end of the note
 		let sectionFound = false;
@@ -152,7 +152,7 @@ export default class LumberjackPlugin extends Plugin {
 		let dailyNoteOldText = await this.app.vault.read(dailyNote); // unsure about using .read versus .cachedRead here. as this is meant to be used when Obsidian is in the background
 
 		let dailyNoteNewText = `${dailyNoteOldText}
-		${this.settings.logPrefix}${tampTime}${someData}`
+${this.settings.logPrefix}${tampTime}${someData}`
 
 		this.app.vault.modify(dailyNote, dailyNoteNewText) // write the new line in
 		new Notice('Data "' + someData + '" logged to the daily note.');
