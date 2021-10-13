@@ -7,6 +7,7 @@ interface LumberjackSettings {
 	alwaysOpenInNewLeaf: boolean;
 	inboxFilePath: string;
 	newDraftFilenameTemplate: string;
+	targetHeader: string;
 }
 
 const DEFAULT_SETTINGS: LumberjackSettings = {
@@ -14,7 +15,8 @@ const DEFAULT_SETTINGS: LumberjackSettings = {
 	useTimestamp: true,
 	alwaysOpenInNewLeaf: false,
 	inboxFilePath: "/",
-	newDraftFilenameTemplate: "YYYYMMDDHHmm"
+	newDraftFilenameTemplate: "YYYYMMDDHHmm",
+	targetHeader: "## Journal"
 }
 
 const editModeState = {
@@ -85,27 +87,45 @@ export default class LumberjackPlugin extends Plugin {
 
 	// 
 	async newLog(openFileInNewLeaf: boolean) {
+		
+		// check if the app is mobile, to change how the editor is manipulated (CM5 vs CM6 have slightly different functions)
+		// note: might need to re-evaluate this once the desktop CM6 editor is launched
 		let obsidianMobileFlag = Platform.isMobile;
 
+		// find or create the daily note
 		let dailyNote = getDailyNote(moment(), getAllDailyNotes());
 		if (!dailyNote) { dailyNote = await createDailyNote(moment()); }
-		let tampTime: string;
 		
+		// set up the timestamp string, if the user is using it
+		let tampTime: string;
 		if (this.settings.useTimestamp) {
 			tampTime = moment().format("HH:mm") + " ";
 		} else {
 			tampTime = "";
 		}
 
+		// open the daily note in edit mode and get the editor
 		let openedDailyNote = await this.app.workspace.openLinkText(dailyNote.name, dailyNote.path, openFileInNewLeaf, editModeState);
-
 		let editor = this.app.workspace.getActiveViewOfType(MarkdownView).editor;
 
+		// establish the line prefix to add, if anything
 		let linePrefix = `
 		${this.settings.logPrefix}${tampTime}`
-		
+
+		// Assume the cursor will be placed at the end of the note
+		let sectionFound = false;
+
+		// find the section to insert the log item into and set the insert position to append into it, or set the insert position to the end of the note
+		let dailyNoteText = this.app.vault.read(dailyNote);
+		if ((await dailyNoteText).contains(this.settings.targetHeader)) {
+			// need to figure out which line the _next_ section is on, if any, then use that line number in the functions below
+			
+		}
+
+		// Make sure the editor has focus and set the cursor either in the found section or at the end of the note
 		editor.focus();
 		if (obsidianMobileFlag) {
+			if (!sectionFound)
 			editor.setCursor(editor.lastLine());
 			editor.replaceSelection(linePrefix);
 			editor.setCursor(editor.lastLine());
@@ -129,7 +149,7 @@ export default class LumberjackPlugin extends Plugin {
 			tampTime = moment().format("HH:mm") + " ";
 		}
 
-		let dailyNoteOldText = await this.app.vault.read(dailyNote);
+		let dailyNoteOldText = await this.app.vault.read(dailyNote); // unsure about using .read versus .cachedRead here. as this is meant to be used when Obsidian is in the background
 
 		let dailyNoteNewText = `${dailyNoteOldText}
 		${this.settings.logPrefix}${tampTime}${someData}`
@@ -189,6 +209,17 @@ class LumberjackSettingsTab extends PluginSettingTab {
 		containerEl.empty();
 
 		containerEl.createEl('h2', {text: 'Lumberjack Settings'});
+
+		new Setting(containerEl)
+			.setName('Target header')
+			.setDesc('Append logged items to a target header in your daily note')
+			.addText(text => text
+				.setPlaceholder(this.plugin.settings.targetHeader)
+				.setValue(this.plugin.settings.targetHeader)
+				.onChange(async (value) => {
+					this.plugin.settings.targetHeader = value;
+					await this.plugin.saveSettings();
+				}));
 
 		new Setting(containerEl)
 			.setName('Prefix for logging')
