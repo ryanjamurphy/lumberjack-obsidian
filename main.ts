@@ -101,7 +101,9 @@ export default class LumberjackPlugin extends Plugin {
 
 		let editor = this.app.workspace.getActiveViewOfType(MarkdownView).editor;
 
-		let linePrefix = "\n" + this.settings.logPrefix + tampTime;
+		let linePrefix = `
+		${this.settings.logPrefix}${tampTime}`
+		
 		editor.focus();
 		if (obsidianMobileFlag) {
 			editor.setCursor(editor.lastLine());
@@ -127,9 +129,12 @@ export default class LumberjackPlugin extends Plugin {
 			tampTime = moment().format("HH:mm") + " ";
 		}
 
-		let dailyNoteText = (await this.app.vault.read(dailyNote)) + "\n" + this.settings.logPrefix + tampTime + someData;
+		let dailyNoteOldText = await this.app.vault.read(dailyNote);
 
-		this.app.vault.modify(dailyNote, dailyNoteText) // write the new line in
+		let dailyNoteNewText = `${dailyNoteOldText}
+		${this.settings.logPrefix}${tampTime}${someData}`
+
+		this.app.vault.modify(dailyNote, dailyNoteNewText) // write the new line in
 		new Notice('Data "' + someData + '" logged to the daily note.');
 	}
 
