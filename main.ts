@@ -109,11 +109,9 @@ export default class LumberjackPlugin extends Plugin {
 			editor.setCursor(editor.lastLine());
 		} else {
 			const initialLines = editor.lineCount();
-			console.log(initialLines);
 			editor.setCursor({ line: initialLines, ch: 0 });
 			editor.replaceSelection(linePrefix);
 			const finalLines = editor.lineCount();
-			console.log(finalLines);
 			editor.setCursor({ ch: 0, line: finalLines });
 		}
 	
@@ -160,7 +158,7 @@ export default class LumberjackPlugin extends Plugin {
 	}
 
 	onunload() {
-		console.log('unloading plugin');
+		console.log('Unloading the Lumberjack plugin. Watch out for splinters.');
 	}
 
 	async loadSettings() {
