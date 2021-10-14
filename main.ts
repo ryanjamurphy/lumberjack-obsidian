@@ -16,7 +16,7 @@ const DEFAULT_SETTINGS: LumberjackSettings = {
 	alwaysOpenInNewLeaf: false,
 	inboxFilePath: "/",
 	newDraftFilenameTemplate: "YYYYMMDDHHmmss",
-	targetHeader: ""
+	targetHeader: "Journal"
 }
 
 const editModeState = {
