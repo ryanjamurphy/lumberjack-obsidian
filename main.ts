@@ -15,7 +15,7 @@ const DEFAULT_SETTINGS: LumberjackSettings = {
 	useTimestamp: true,
 	alwaysOpenInNewLeaf: false,
 	inboxFilePath: "/",
-	newDraftFilenameTemplate: "YYYYMMDDHHmm",
+	newDraftFilenameTemplate: "YYYYMMDDHHmmss",
 	targetHeader: "Journal"
 }
 
@@ -85,12 +85,8 @@ export default class LumberjackPlugin extends Plugin {
 
 	}
 
-	// 
+	// newLog creates a new item with a user-configured prefix under a user-configured heading in the daily note, and gives them editing ability in that position immediately.
 	async newLog(openFileInNewLeaf: boolean) {
-		
-		// check if the app is mobile, to change how the editor is manipulated (CM5 vs CM6 have slightly different functions)
-		// note: might need to re-evaluate this once the desktop CM6 editor is launched
-		let obsidianMobileFlag = Platform.isMobile;
 
 		// find or create the daily note
 		let dailyNote = getDailyNote(moment(), getAllDailyNotes());
@@ -211,7 +207,6 @@ ${this.settings.logPrefix}${tampTime}${someData}`
 	}
 
 	async timber() {
-		let obsidianMobileFlag = Platform.isMobile;
 
 		let zkUUIDNoteName = moment().format(this.settings.newDraftFilenameTemplate);
 		await this.app.vault.create(this.settings.inboxFilePath + zkUUIDNoteName + ".md", "");
@@ -220,17 +215,9 @@ ${this.settings.logPrefix}${tampTime}${someData}`
 
 		editor.focus();
 		let startChar = "";
-		if (obsidianMobileFlag) {
-			editor.setCursor(editor.lastLine());
-			editor.replaceSelection(startChar);
-			editor.setCursor(editor.lastLine());
-		} else {
-			const initialLines = editor.lineCount();
-			editor.setCursor({ line: initialLines, ch: 0 });
-			editor.replaceSelection(startChar);
-			const finalLines = editor.lineCount();
-			editor.setCursor({ ch: 0, line: finalLines });
-		}
+		editor.setCursor(editor.lastLine());
+		editor.replaceSelection(startChar);
+		editor.setCursor(editor.lastLine());
 
 	}
 
