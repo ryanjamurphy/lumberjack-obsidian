@@ -55,15 +55,11 @@ export default class LumberjackPlugin extends Plugin {
 
 			const parameters = 𖣂 as unknown as Parameters;
 
-			for (const parameter in parameters) {
+			for (const parameter in parameters) { // not yet using parameters
 				(parameters as any)[parameter] = decodeURIComponent((parameters as any)[parameter]); // Thanks to @Vinzent03 for a clear-cut (pun intended) example of how to do this
 			}
 
-			if (parameters.data) {
-				this.ifATreeFallsInTheBackgroundDidItEverReallyFall(parameters.data);
-			} else {
-				this.newLog(this.settings.alwaysOpenInNewLeaf);
-			}
+			this.newLog(this.settings.alwaysOpenInNewLeaf);
 		});
 
 		this.registerObsidianProtocolHandler("timber", async (𖣂) => {
@@ -77,7 +73,7 @@ export default class LumberjackPlugin extends Plugin {
 			}
 
 			if (parameters.name) {
-				this.ifATreeFallsInTheBackgroundDidItEverReallyFall(parameters.data);
+				// this.ifATreeFallsInTheBackgroundDidItEverReallyFall(parameters.name); // not yet implemented
 			} else {
 				this.timber();
 			}
@@ -103,6 +99,10 @@ export default class LumberjackPlugin extends Plugin {
 		// open the daily note in edit mode and get the editor
 		let openedDailyNote = await this.app.workspace.openLinkText(dailyNote.name, dailyNote.path, openFileInNewLeaf, editModeState);
 		let editor = this.app.workspace.getActiveViewOfType(MarkdownView).editor;
+		if (editor == null) {
+			new Notice(`Could not find the daily note. Check your daily note settings, or report this as a bug on the plugin repository.`);
+			return
+		}
 
 		// establish the line prefix to add, if anything
 		let linePrefix = `
@@ -111,15 +111,11 @@ ${this.settings.logPrefix}${tampTime}`
 		// Make sure the editor has focus
 		editor.focus();
 
-		// Assume the cursor will be placed at the end of the note
-		let sectionFound = false;
-
 		// Inserting the cursor
 		// The goal is to set the cursor either at the end of the user's target section, if set, or at the end of the note
 		
 		// find the section to insert the log item into and set the insert position to append into it, or set the insert position to the end of the note
 		let sections = this.app.metadataCache.getFileCache(dailyNote).headings;
-		let dailyNoteText = await this.app.vault.read(dailyNote);
 		if (this.settings.targetHeader != "") { // If the user has set a target header
 			// need to figure out which line the _next_ section is on, if any, then use that line number in the functions below
 			let targetSection = sections.find( (eachSection) => (eachSection.heading === this.settings.targetHeader)); // does the heading we're looking for exist?
@@ -192,24 +188,25 @@ ${this.settings.logPrefix}${tampTime}`
 	
 	}
 
-	// Log the thought in the background.
-	async ifATreeFallsInTheBackgroundDidItEverReallyFall(someData: string) {
-		let dailyNote = getDailyNote(moment(), getAllDailyNotes());
-		if (!dailyNote) { dailyNote = await createDailyNote(moment()); }
-		let tampTime: string;
+// 	// Log the thought in the background.
+//	// Not yet implemented.
+// 	async ifATreeFallsInTheBackgroundDidItEverReallyFall(someData: string) {
+// 		let dailyNote = getDailyNote(moment(), getAllDailyNotes());
+// 		if (!dailyNote) { dailyNote = await createDailyNote(moment()); }
+// 		let tampTime: string;
 		
-		if (this.settings.useTimestamp) {
-			tampTime = moment().format("HH:mm") + " ";
-		}
+// 		if (this.settings.useTimestamp) {
+// 			tampTime = moment().format("HH:mm") + " ";
+// 		}
 
-		let dailyNoteOldText = await this.app.vault.read(dailyNote); // unsure about using .read versus .cachedRead here. as this is meant to be used when Obsidian is in the background
+// 		let dailyNoteOldText = await this.app.vault.read(dailyNote); // unsure about using .read versus .cachedRead here. as this is meant to be used when Obsidian is in the background
 
-		let dailyNoteNewText = `${dailyNoteOldText}
-${this.settings.logPrefix}${tampTime}${someData}`
+// 		let dailyNoteNewText = `${dailyNoteOldText}
+// ${this.settings.logPrefix}${tampTime}${someData}`
 
-		this.app.vault.modify(dailyNote, dailyNoteNewText) // write the new line in
-		new Notice('Data "' + someData + '" logged to the daily note.');
-	}
+// 		this.app.vault.modify(dailyNote, dailyNoteNewText) // write the new line in
+// 		new Notice('Data "' + someData + '" logged to the daily note.');
+// 	}
 
 	async timber() {
 
@@ -217,6 +214,11 @@ ${this.settings.logPrefix}${tampTime}${someData}`
 		await this.app.vault.create(this.settings.inboxFilePath + zkUUIDNoteName + ".md", "");
 		let newDraft = await this.app.workspace.openLinkText(zkUUIDNoteName, this.settings.inboxFilePath, this.settings.alwaysOpenInNewLeaf, editModeState);
 		let editor = this.app.workspace.getActiveViewOfType(MarkdownView).editor;
+
+		if (editor == null) {
+			new Notice(`Could not find the daily note. Check your daily note settings, or report this as a bug on the plugin repository.`);
+			return
+		}
 
 		editor.focus();
 		let startChar = "";
