@@ -124,7 +124,7 @@ ${this.settings.logPrefix}${tampTime}`
 			// need to figure out which line the _next_ section is on, if any, then use that line number in the functions below
 			let targetSection = sections.find( (eachSection) => (eachSection.heading === this.settings.targetHeader)); // does the heading we're looking for exist?
 			if (typeof(targetSection !== undefined)) { // The target section exists
-				let nextSection = sections.find( (eachSection) => ((eachSection.position.start.line > targetSection.position.start.line) && (eachSection.level >= targetSection.level))); // matches sections _after_ our target, with the same level or greater
+				let nextSection = sections.find( (eachSection) => ((eachSection.position.start.line > targetSection.position.start.line) && (eachSection.level <= targetSection.level))); // matches sections _after_ our target, with the same level or greater
 				console.debug(nextSection);
 				if (!nextSection) {
 					// There is no section following the target section. Look for the end of the document
