@@ -14,7 +14,7 @@ const DEFAULT_SETTINGS: LumberjackSettings = {
 	logPrefix: '- [ ] ',
 	useTimestamp: true,
 	alwaysOpenInNewLeaf: false,
-	inboxFilePath: "/",
+	inboxFilePath: "Inbox",
 	newDraftFilenameTemplate: "YYYYMMDDHHmmss",
 	targetHeader: "Journal"
 }
@@ -211,8 +211,18 @@ ${this.settings.logPrefix}${tampTime}`
 	async timber() {
 
 		let zkUUIDNoteName = moment().format(this.settings.newDraftFilenameTemplate);
-		await this.app.vault.create(this.settings.inboxFilePath + zkUUIDNoteName + ".md", "");
-		let newDraft = await this.app.workspace.openLinkText(zkUUIDNoteName, this.settings.inboxFilePath, this.settings.alwaysOpenInNewLeaf, editModeState);
+
+		console.log(`${this.settings.inboxFilePath}`);
+
+		if (!(this.app.vault.getAbstractFileByPath(`${this.settings.inboxFilePath}`))) { // In the future, handle folder creation as necessary. For now, error and tell the user if the inbox folder does not exist.
+			new Notice(`Error. Lumberjack couldn't create the draft. Does the inbox folder you've set in Preferences -> Lumberjack 🪓🪵 exist?`);
+			return;
+		}
+		
+		await this.app.vault.create(`/${this.settings.inboxFilePath}/${zkUUIDNoteName}.md`, "");
+
+		let newDraft = await this.app.workspace.openLinkText(zkUUIDNoteName, `/${this.settings.inboxFilePath}/`, this.settings.alwaysOpenInNewLeaf, editModeState);
+
 		let editor = this.app.workspace.getActiveViewOfType(MarkdownView).editor;
 
 		if (editor == null) {
@@ -300,7 +310,7 @@ class LumberjackSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Inbox folder')
-			.setDesc('Set the destination for notes created with `obsidian://timber`.')
+			.setDesc('Set the destination for notes created with `obsidian://timber`, e.g., `My Notes/Inbox`. Do not include leading or trailing slashes.')
 			.addText(text => text
 				.setValue(this.plugin.settings.inboxFilePath)
 				.setPlaceholder(this.plugin.settings.inboxFilePath)
