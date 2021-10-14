@@ -182,6 +182,11 @@ ${this.settings.logPrefix}${tampTime}`
 					}
 				}
 			}
+		} else {
+			// The user has not set a target header. Insert the log item at the bottom of the note.
+			editor.setCursor(editor.lastLine());
+			editor.replaceSelection(linePrefix);
+			editor.setCursor(editor.lastLine());
 		}
 
 	
