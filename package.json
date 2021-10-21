@@ -1,6 +1,6 @@
 {
   "name": "Lumberjack 🪓🪵",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Log your thoughts! Lumberjack adds URL commands to help you axe inefficiency and get right to writing.",
   "main": "main.js",
   "scripts": {
