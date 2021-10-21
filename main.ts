@@ -1,4 +1,4 @@
-import { App, Notice, Plugin, PluginSettingTab, Setting, moment, MarkdownView, Platform } from 'obsidian';
+import { App, Notice, Plugin, PluginSettingTab, Setting, moment, MarkdownView } from 'obsidian';
 import { createDailyNote, getAllDailyNotes, getDailyNote } from 'obsidian-daily-notes-interface';
 
 interface LumberjackSettings {
@@ -8,6 +8,7 @@ interface LumberjackSettings {
 	inboxFilePath: string;
 	newDraftFilenameTemplate: string;
 	targetHeader: string;
+	timestampFormat: string;
 }
 
 const DEFAULT_SETTINGS: LumberjackSettings = {
@@ -16,7 +17,8 @@ const DEFAULT_SETTINGS: LumberjackSettings = {
 	alwaysOpenInNewLeaf: false,
 	inboxFilePath: "Inbox",
 	newDraftFilenameTemplate: "YYYYMMDDHHmmss",
-	targetHeader: "Journal"
+	targetHeader: "Journal",
+	timestampFormat: "HH:mm"
 }
 
 const editModeState = {
@@ -91,7 +93,7 @@ export default class LumberjackPlugin extends Plugin {
 		// set up the timestamp string, if the user is using it
 		let tampTime: string;
 		if (this.settings.useTimestamp) {
-			tampTime = moment().format("HH:mm") + " ";
+			tampTime = moment().format(this.settings.timestampFormat) + " ";
 		} else {
 			tampTime = "";
 		}
@@ -302,12 +304,17 @@ class LumberjackSettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Timestamp')
-			.setDesc('If enabled, the log command will prefix newly added lines with a timestamp.')
+			.setDesc('If enabled, the log command will prefix newly added lines with a timestamp. (Changing this setting reloads the plugin.)')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.useTimestamp)
 				.onChange(async (value) => {
 					this.plugin.settings.useTimestamp = value;
 					await this.plugin.saveSettings();
+					if (value) {
+						this.containerEl.appendChild(timestampFormatSetting.settingEl);
+					} else {
+						timestampFormatSetting.settingEl.remove();
+					}
 				}));
 
 		new Setting(containerEl)
@@ -341,5 +348,19 @@ class LumberjackSettingsTab extends PluginSettingTab {
 					this.plugin.settings.newDraftFilenameTemplate = value;
 					await this.plugin.saveSettings();
 				}));
+		let timestampFormatSetting = new Setting(containerEl)
+			.setName('Timestamp format')
+			.setDesc('Set the format for timestamp prefixes. Follows Moment.js formatting, same as Obsidian\'s core daily notes.')
+			.addText(text => text
+				.setValue(this.plugin.settings.timestampFormat)
+				.setPlaceholder(this.plugin.settings.timestampFormat)
+				.onChange(async (value) => {
+					this.plugin.settings.timestampFormat = value;
+					await this.plugin.saveSettings();
+				}))
+
+		if (!this.plugin.settings.useTimestamp) {
+			timestampFormatSetting.settingEl.remove();
+		}
 	}
 }
