@@ -13,3 +13,4 @@ main.js
 # obsidian
 data.json
 .env
+.DS_Store
