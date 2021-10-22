@@ -128,8 +128,8 @@ ${this.settings.logPrefix}${tampTime}`
 			} else {
 				if (this.settings.targetHeader != "") { // If the user has set a target header
 					// need to figure out which line the _next_ section is on, if any, then use that line number in the functions below
-					let targetSection = sections.find( (eachSection) => (eachSection.heading === this.settings.targetHeader)); // does the heading we're looking for exist?
-					if (typeof(targetSection !== undefined)) { // The target section exists
+					let targetSection = sections.find( (eachSection) => (eachSection.heading == this.settings.targetHeader)); // does the heading we're looking for exist?
+					if (targetSection) { // The target section exists
 						let nextSection = sections.find( (eachSection) => ((eachSection.position.start.line > targetSection.position.start.line) && (eachSection.level <= targetSection.level))); // matches sections _after_ our target, with the same level or greater
 						console.debug(nextSection);
 						if (!nextSection) {
@@ -192,6 +192,9 @@ ${this.settings.logPrefix}${tampTime}`
 								}
 							}
 						}
+					} else {
+						new Notice(`Could not run the Log command. Your daily note does not contain the target section you've specified in Preferences → Lumberjack—that is, the heading "${this.settings.targetHeader}". Please enter a heading that exists in your daily note, or leave this setting blank.`);
+						return;
 					}
 				} else {
 					// The user has not set a target header. Insert the log item at the bottom of the note.
