@@ -1,7 +1,7 @@
 {
 	"id": "lumberjack-obsidian",
 	"name": "Lumberjack 🪓 🪵",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"minAppVersion": "0.12.0",
 	"description": "Log your thoughts! Lumberjack adds URL commands to help you axe inefficiency and get right to writing.",
 	"author": "ryanjamurphy",
