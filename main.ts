@@ -229,17 +229,20 @@ ${this.settings.logPrefix}${tampTime}`
 	async timber() {
 
 		let zkUUIDNoteName = moment().format(this.settings.newDraftFilenameTemplate);
+		const isInboxPathEmpty = this.settings.inboxFilePath === undefined || this.settings.inboxFilePath.trim() === '';
+		const folderName = isInboxPathEmpty ? '' : this.settings.inboxFilePath;
+		const inboxPath = isInboxPathEmpty ? '' : `/${this.settings.inboxFilePath}/`;
 
 		console.debug(`${this.settings.inboxFilePath}`);
 
-		if (!(this.app.vault.getAbstractFileByPath(`${this.settings.inboxFilePath}`))) { // In the future, handle folder creation as necessary. For now, error and tell the user if the inbox folder does not exist.
+		if (!isInboxPathEmpty && !(this.app.vault.getAbstractFileByPath(`${folderName}`))) { // In the future, handle folder creation as necessary. For now, error and tell the user if the inbox folder does not exist.
 			new Notice(`Error. Lumberjack couldn't create the draft. Does the inbox folder you've set in Preferences -> Lumberjack 🪓🪵 exist?`);
 			return;
 		}
 		
-		await this.app.vault.create(`/${this.settings.inboxFilePath}/${zkUUIDNoteName}.md`, "");
+		await this.app.vault.create(`${inboxPath}${zkUUIDNoteName}.md`, "");
 
-		let newDraft = await this.app.workspace.openLinkText(zkUUIDNoteName, `/${this.settings.inboxFilePath}/`, this.settings.alwaysOpenInNewLeaf, editModeState);
+		let newDraft = await this.app.workspace.openLinkText(zkUUIDNoteName, `${inboxPath}`, this.settings.alwaysOpenInNewLeaf, editModeState);
 
 		if (this.app.workspace.getActiveViewOfType(MarkdownView)) {
 			let editor = this.app.workspace.getActiveViewOfType(MarkdownView).editor;
